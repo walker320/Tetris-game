@@ -616,57 +616,54 @@
     };
   }
 
-document.addEventListener('touchstart', handleTouchStart, false);
-document.addEventListener('touchmove', handleTouchMove, false);
-document.addEventListener('touchend', handleTouchEnd, false);
-
-let touchStartX = 0;
-let touchStartY = 0;
-let activeTouch = null;
-
-function handleTouchStart(event) {
-  if (event.touches.length === 1) {
-    activeTouch = event.touches[0];
-    touchStartX = activeTouch.pageX;
-    touchStartY = activeTouch.pageY;
-  }
-}
-
-function handleTouchMove(event) {
-  if (activeTouch) {
-    const deltaX = activeTouch.pageX - touchStartX;
-    const deltaY = activeTouch.pageY - touchStartY;
-
-    // Determine the direction based on the touch movement
-    const absDeltaX = Math.abs(deltaX);
-    const absDeltaY = Math.abs(deltaY);
-
-    if (absDeltaX > absDeltaY) {
-      // Horizontal swipe
-      if (deltaX > 0) {
-        // Swipe right
-        tetris.move('R');
-      } else {
-        // Swipe left
-        tetris.move('L');
-      }
-    } else {
-      // Vertical swipe
-      if (deltaY > 0) {
-        // Swipe down
-        tetris.move('D');
-      } else {
-        // Swipe up
-        tetris.move('RT');
+  const bindKeyEvents = () => {
+    const me = this;
+  
+    document.addEventListener('keydown', (event) => {
+      me.handleKey(event);
+    }, false);
+  
+    document.addEventListener('touchstart', handleTouchStart, false);
+    document.addEventListener('touchmove', handleTouchMove, false);
+    document.addEventListener('touchend', handleTouchEnd, false);
+  
+    let activeTouch;
+    let touchStartX;
+    let touchStartY;
+  
+    function handleTouchStart(event) {
+      if (event.touches.length === 1) {
+        activeTouch = event.touches[0];
+        touchStartX = activeTouch.pageX;
+        touchStartY = activeTouch.pageY;
       }
     }
-
-    // Reset touchStart variables for next swipe
-    touchStartX = activeTouch.pageX;
-    touchStartY = activeTouch.pageY;
-  }
-}
-
-function handleTouchEnd(event) {
-  activeTouch = null;
-}
+  
+    function handleTouchMove(event) {
+      if (activeTouch) {
+        const deltaX = activeTouch.pageX - touchStartX;
+        const deltaY = activeTouch.pageY - touchStartY;
+  
+        const absDeltaX = Math.abs(deltaX);
+        const absDeltaY = Math.abs(deltaY);
+  
+        if (absDeltaX > absDeltaY) {
+          if (deltaX > 0) {
+            me.move('R');
+          } else {
+            me.move('L');
+          }
+        } else {
+          if (deltaY > 0) {
+            me.move('D');
+          } else {
+            me.move('U');
+          }
+        }
+      }
+    }
+  
+    function handleTouchEnd() {
+      activeTouch = null;
+    }
+  };
