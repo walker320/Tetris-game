@@ -87,3 +87,39 @@ body {
   height: 420px;
   padding: 10px;
 }
+
+#virtual-keyboard {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+#virtual-keyboard button {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: none;
+  font-size: 20px;
+  padding: 10px;
+  margin: 0 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+#virtual-keyboard button:active {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+@media (min-width: 768px) {
+  #virtual-keyboard {
+    display: none;
+  }
+}
