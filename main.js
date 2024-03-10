@@ -619,51 +619,80 @@
   const bindKeyEvents = () => {
     const me = this;
   
-    document.addEventListener('keydown', (event) => {
-      me.handleKey(event);
-    }, false);
-  
-    document.addEventListener('touchstart', handleTouchStart, false);
-    document.addEventListener('touchmove', handleTouchMove, false);
-    document.addEventListener('touchend', handleTouchEnd, false);
-  
-    let activeTouch;
-    let touchStartX;
-    let touchStartY;
-  
-    function handleTouchStart(event) {
-      if (event.touches.length === 1) {
-        activeTouch = event.touches[0];
-        touchStartX = activeTouch.pageX;
-        touchStartY = activeTouch.pageY;
+    const handleKey = (event) => {
+      const key = event.key || event.keyCode;
+      switch (key) {
+        case 'ArrowLeft':
+        case 37:
+          me.move('L');
+          break;
+        case 'ArrowUp':
+        case 38:
+          me.move('U');
+          break;
+        case 'ArrowRight':
+        case 39:
+          me.move('R');
+          break;
+        case 'ArrowDown':
+        case 40:
+          me.move('D');
+          break;
+        case 'Escape':
+          me.togglePause();
+          break;
+        default:
+          break;
       }
-    }
+    };
   
-    function handleTouchMove(event) {
-      if (activeTouch) {
-        const deltaX = activeTouch.pageX - touchStartX;
-        const deltaY = activeTouch.pageY - touchStartY;
+    document.addEventListener('keydown', handleKey);
   
-        const absDeltaX = Math.abs(deltaX);
-        const absDeltaY = Math.abs(deltaY);
+    // Virtual keyboard for mobile devices
+    const isMobile = () => {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    };
   
-        if (absDeltaX > absDeltaY) {
-          if (deltaX > 0) {
-            me.move('R');
-          } else {
-            me.move('L');
-          }
-        } else {
-          if (deltaY > 0) {
-            me.move('D');
-          } else {
-            me.move('U');
+    if (isMobile()) {
+      const keyboard = document.createElement('div');
+      keyboard.id = 'virtual-keyboard';
+      keyboard.innerHTML = `
+        <button data-key="ArrowLeft">←</button>
+        <button data-key="ArrowUp">↑</button>
+        <button data-key="ArrowRight">→</button>
+        <button data-key="ArrowDown">↓</button>
+        <button data-key="Escape">⏎</button>
+      `;
+  
+      document.body.appendChild(keyboard);
+  
+      keyboard.addEventListener('click', (event) => {
+        const key = event.target.dataset.key;
+        if (key) {
+          switch (key) {
+            case 'ArrowLeft':
+            case '37':
+              me.move('L');
+              break;
+            case 'ArrowUp':
+            case '38':
+              me.move('U');
+              break;
+            case 'ArrowRight':
+            case '39':
+              me.move('R');
+              break;
+            case 'ArrowDown':
+            case '40':
+              me.move('D');
+              break;
+            case 'Escape':
+              me.togglePause();
+              break;
+            default:
+              break;
           }
         }
-      }
-    }
-  
-    function handleTouchEnd() {
-      activeTouch = null;
+      });
     }
   };
